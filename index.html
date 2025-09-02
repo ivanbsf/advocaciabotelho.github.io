@@ -2,42 +2,85 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Repositório de Documentos</title>
+  <title>Repositório Seguro</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #121212;
+      color: #e0e0e0;
       text-align: center;
-      background: #f2f2f2;
       padding: 50px;
     }
-    #login, #repo {
-      max-width: 400px;
-      margin: auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+
+    h2 {
+      color: #ff4c4c;
+      border-bottom: 2px solid #ff4c4c;
+      display: inline-block;
+      padding-bottom: 5px;
     }
+
+    #login, #repo {
+      max-width: 450px;
+      margin: auto;
+      padding: 25px;
+      background: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+    }
+
     input[type="password"] {
       width: 90%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      padding: 12px;
+      margin: 15px 0;
+      border: 1px solid #ff4c4c;
+      border-radius: 6px;
+      background: #2a2a2a;
+      color: #fff;
+      font-size: 16px;
     }
+
     button {
-      padding: 10px 20px;
+      padding: 12px 25px;
       border: none;
-      background: #0077cc;
+      background: linear-gradient(90deg, #ff4c4c, #cc0000);
       color: white;
-      border-radius: 5px;
+      font-size: 16px;
+      border-radius: 6px;
       cursor: pointer;
+      transition: 0.3s;
     }
+
     button:hover {
-      background: #005fa3;
+      background: linear-gradient(90deg, #cc0000, #ff4c4c);
+      transform: scale(1.05);
     }
+
     ul {
       text-align: left;
+      list-style: none;
+      padding: 0;
+    }
+
+    ul li {
+      margin: 10px 0;
+      padding: 8px;
+      background: #2a2a2a;
+      border-left: 4px solid #ff4c4c;
+      border-radius: 4px;
+    }
+
+    ul li a {
+      color: #ffcccc;
+      text-decoration: none;
+    }
+
+    ul li a:hover {
+      text-decoration: underline;
+    }
+
+    #erro {
+      color: #ff4c4c;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -48,36 +91,56 @@
     <input type="password" id="senha" placeholder="Senha">
     <br>
     <button onclick="verificarSenha()">Entrar</button>
-    <p id="erro" style="color:red;"></p>
+    <p id="erro"></p>
   </div>
 
   <div id="repo" style="display:none;">
     <h2>📂 Repositório de Documentos</h2>
     <ul>
-      <li><a href="docs/IPTU.pdf" target="_blank">Contrato 1</a></li>
-      <li><a href="docs/00-ATENDIMENTO.docx" target="_blank">Relatório 2</a></li>
+      <li><a href="docs/contrato1.pdf" target="_blank">Contrato 1</a></li>
+      <li><a href="docs/relatorio2.docx" target="_blank">Relatório 2</a></li>
       <li><a href="docs/apresentacao3.pptx" target="_blank">Apresentação 3</a></li>
     </ul>
+    <br>
     <button onclick="sair()">Sair</button>
   </div>
 
   <script>
-    function verificarSenha() {
-      const senha = document.getElementById("senha").value;
-      if (senha === "senhaforte123") {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("repo").style.display = "block";
-      } else {
-        document.getElementById("erro").innerText = "Senha incorreta!";
-      }
-    }
+    async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
 
-    function sair() {
-      document.getElementById("repo").style.display = "none";
-      document.getElementById("login").style.display = "block";
-      document.getElementById("senha").value = "";
+    const HASH_SENHA = "d3c411636ec2c9d6a3ff2ca04a4c90c9e93da64712353bd44b8b84b23b2b0895";
+
+  async function verificarSenha() {
+    const campo = document.getElementById("senha");
+    const senhaDigitada = (campo.value || "").trim(); // evita espaços acidentais
+    const hashDigitado = await sha256(senhaDigitada);
+
+    if (hashDigitado === HASH_SENHA) {
+      document.getElementById("login").style.display = "none";
+      document.getElementById("repo").style.display = "block";
       document.getElementById("erro").innerText = "";
+    } else {
+      document.getElementById("erro").innerText = "Senha incorreta!";
     }
-  </script>
+  }
+
+  function sair() {
+    document.getElementById("repo").style.display = "none";
+    document.getElementById("login").style.display = "block";
+    document.getElementById("senha").value = "";
+    document.getElementById("erro").innerText = "";
+  }
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("senha");
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") verificarSenha();
+    });
+  });
+</script>
 </body>
 </html>
