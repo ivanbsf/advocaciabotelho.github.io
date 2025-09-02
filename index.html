@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Repositório de Documentos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f2f2f2;
+      padding: 50px;
+    }
+    #login, #repo {
+      max-width: 400px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    input[type="password"] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #0077cc;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    ul {
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div id="login">
+    <h2>Acesso Restrito</h2>
+    <p>Digite a senha para acessar os documentos:</p>
+    <input type="password" id="senha" placeholder="Senha">
+    <br>
+    <button onclick="verificarSenha()">Entrar</button>
+    <p id="erro" style="color:red;"></p>
+  </div>
+
+  <div id="repo" style="display:none;">
+    <h2>📂 Repositório de Documentos</h2>
+    <ul>
+      <li><a href="docs/IPTU.pdf" target="_blank">Contrato 1</a></li>
+      <li><a href="docs/00-ATENDIMENTO.docx" target="_blank">Relatório 2</a></li>
+      <li><a href="docs/apresentacao3.pptx" target="_blank">Apresentação 3</a></li>
+    </ul>
+    <button onclick="sair()">Sair</button>
+  </div>
+
+  <script>
+    function verificarSenha() {
+      const senha = document.getElementById("senha").value;
+      if (senha === "senhaforte123") {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("repo").style.display = "block";
+      } else {
+        document.getElementById("erro").innerText = "Senha incorreta!";
+      }
+    }
+
+    function sair() {
+      document.getElementById("repo").style.display = "none";
+      document.getElementById("login").style.display = "block";
+      document.getElementById("senha").value = "";
+      document.getElementById("erro").innerText = "";
+    }
+  </script>
+</body>
+</html>
